@@ -61,4 +61,4 @@
 ## 5. Document conflict log
 | Date | Documents | Conflict | Human decision |
 |---|---|---|---|
-| | | | |
+| 2026-11-12 | agents.md / plan.md T0.1 | Decision: no Docker in dev; MongoDB via Atlas or local install. `docker-compose.yml` deferred; `docker compose up -d mongo` step in T0.1 acceptance skipped per human override. | Human confirmed override before T0.1 execution. |

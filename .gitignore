@@ -1,0 +1,43 @@
+# ── Dependencies ──────────────────────────────────────────────────────────────
+**/node_modules/
+**/.venv/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# ── Environment / secrets (NEVER commit) ──────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Build output ──────────────────────────────────────────────────────────────
+dist/
+build/
+
+# ── Data directories (NEVER commit) ───────────────────────────────────────────
+**/chroma_data/
+
+# ── Model caches (NEVER commit) ───────────────────────────────────────────────
+**/hf_cache/
+**/.cache/
+
+# ── Test / coverage artefacts ─────────────────────────────────────────────────
+**/.pytest_cache/
+coverage/
+.nyc_output/
+*.lcov
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+pino.log
+
+# ── OS / editor artefacts ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.tgz
+*.tar.gz
