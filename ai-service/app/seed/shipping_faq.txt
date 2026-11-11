@@ -1,0 +1,20 @@
+Acme Retail — Shipping and Delivery Frequently Asked Questions
+Synthetic Knowledge Base Document (Public Support FAQ)
+
+1. What shipping speeds and delivery times do you offer?
+Acme Retail offers three domestic shipping tiers across all contiguous states:
+- Standard Ground Shipping takes 3 to 5 business days after dispatch. Standard shipping is free on all qualifying orders of $50 or more before tax, and costs a flat $6.99 on orders under $50.
+- Express Two-Day Shipping delivers in 2 business days after dispatch for a flat rate of $14.99 per order.
+- Next-Day Overnight Delivery arrives in 1 business day for a flat rate of $24.99 when placed before the daily cutoff time.
+
+2. When will my order leave the warehouse?
+In-stock orders placed Monday through Friday before 2:00 PM Eastern Time are processed and handed to the carrier the same business day. Orders placed after 2:00 PM Eastern Time, on weekends, or on observed federal holidays begin processing on the following business day. During peak seasonal sales events, standard warehouse handling may take up to one additional business day.
+
+3. How do I track my shipment?
+As soon as your parcel leaves our fulfillment center, Acme Retail sends a shipping confirmation email containing your carrier tracking number and a direct tracking link. Carrier tracking scans may take up to 12 hours after label creation to show movement. If a shipment displays no tracking updates for more than three consecutive business days, contact customer support with your order identifier so we can open a carrier trace.
+
+4. Do you ship to PO Boxes, APO/FPO addresses, or internationally?
+Yes. Standard Ground Shipping delivers to domestic PO Boxes and military APO or FPO addresses; however, delivery to military bases can take 7 to 12 business days depending on postal routing. Express Two-Day and Next-Day Overnight options require a physical street address and cannot be delivered to PO Boxes. International shipping is currently supported to Canada and the United Kingdom via tracked economy air parcel, with estimated transit times of 7 to 14 business days excluding customs clearance delays.
+
+5. What happens if my package is delayed or marked delivered but missing?
+First check around porches, garages, apartment mailrooms, and with neighbors, as carriers occasionally leave parcels in sheltered locations. Carriers also sometimes mark parcels delivered up to 24 hours before physical drop-off. If your package has not appeared 24 hours after a delivered scan, contact Acme Retail Support within 14 days so our team can investigate and arrange a replacement shipment or refund.
