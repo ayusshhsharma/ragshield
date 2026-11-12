@@ -94,9 +94,11 @@ def _first_sentence(text: str) -> str:
     normalized = " ".join(cleaned.split())
     if not normalized:
         return ""
-    match = re.match(r"^(.+?[.!?])(?:\s|$)", normalized)
-    if match:
-        return match.group(1)
+    for match in re.finditer(r"[.!?](?=\s|$)", normalized):
+        prefix = normalized[: match.start()].rsplit(maxsplit=1)[-1]
+        if prefix.isdigit() and len(prefix) <= 2:
+            continue
+        return normalized[: match.end()]
     return normalized
 
 

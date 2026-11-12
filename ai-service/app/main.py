@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse
 
 from app.api.deps import require_service_key
 from app.api.routes import health as health_router
+from app.api.routes import rag as rag_router
 from app.core.config import get_settings
 from app.core.errors import setup_error_handlers
 from app.core.logging_config import setup_logging
@@ -61,6 +62,13 @@ setup_error_handlers(app)
 
 # Open routes (no service key)
 app.include_router(health_router.router, prefix="/internal")
+
+# Protected internal routes (require X-Service-Key)
+app.include_router(
+    rag_router.router,
+    prefix="/internal",
+    dependencies=[Depends(require_service_key)],
+)
 
 
 # ── Protected probe route (used only for auth tests) ──────────────────────────
