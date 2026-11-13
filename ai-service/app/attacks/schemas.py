@@ -20,11 +20,19 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 from pydantic.alias_generators import to_camel
+
+from app.rag.pipeline import (
+    ChunkInfo,
+    DefenseConfig,
+    DefenseTrigger,
+    RagConfig,
+)
 
 # ---------------------------------------------------------------------------
 # Allowed literal sets
@@ -137,9 +145,9 @@ class AttackCase(CamelModel):
     @field_validator("case_id", mode="before")
     @classmethod
     def _valid_case_id(cls, v: str) -> str:
-        if not re.fullmatch(r"(AT0[1-8]|BN)-\d{3}", v):
+        if not re.fullmatch(r"((AT0[1-8]|BN)-\d{3}|CU-[\w-]+)", v):
             raise ValueError(
-                f"caseId must match ^(AT0[1-8]|BN)-\\d{{3}}$ (predefined), got {v!r}"
+                f"caseId must match ^(AT0[1-8]|BN)-\\d{{3}}$ or CU-... (custom), got {v!r}"
             )
         return v
 
@@ -239,3 +247,56 @@ def load_cases(path: str | Path) -> list[AttackCase]:
     """
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     return [AttackCase.model_validate(item) for item in data]
+
+
+# ---------------------------------------------------------------------------
+# Execution contracts matching architecture.md §7 and §10
+# ---------------------------------------------------------------------------
+class CaseResult(CamelModel):
+    case_id: str = Field(alias="caseId")
+    category: str
+    is_benign: bool = Field(alias="isBenign")
+    repeat_index: int = Field(default=1, alias="repeatIndex")
+    outcome: str
+    response: str
+    retrieved_chunks: list[ChunkInfo] = Field(
+        default_factory=list, alias="retrievedChunks"
+    )
+    defenses_triggered: list[DefenseTrigger] = Field(
+        default_factory=list, alias="defensesTriggered"
+    )
+    blocked: bool = False
+    blocked_by: str | None = Field(default=None, alias="blockedBy")
+    success_condition_matched_raw: bool = Field(
+        default=False, alias="successConditionMatchedRaw"
+    )
+    benign_acceptable: bool | None = Field(
+        default=None, alias="benignAcceptable"
+    )
+    ambiguous: bool = False
+    provider_blocked: bool = Field(default=False, alias="providerBlocked")
+    latency_ms: int = Field(default=0, alias="latencyMs")
+    defense_latency_ms: int = Field(default=0, alias="defenseLatencyMs")
+    error: str | None = None
+    timestamp: str = Field(
+        default_factory=lambda: datetime.now(UTC).isoformat()
+    )
+
+
+class RunCaseRequest(CamelModel):
+    project_id: str = Field(alias="projectId")
+    case: AttackCase
+    rag_config: RagConfig = Field(default_factory=RagConfig, alias="ragConfig")
+    defense_config: DefenseConfig = Field(
+        default_factory=DefenseConfig, alias="defenseConfig"
+    )
+    repeat_index: int = Field(default=1, ge=1, alias="repeatIndex")
+
+    @field_validator("project_id")
+    @classmethod
+    def _validate_project_id(cls, v: str) -> str:
+        cleaned = v.strip()
+        if not cleaned:
+            raise ValueError("projectId must not be empty.")
+        return cleaned
+

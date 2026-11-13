@@ -1,5 +1,6 @@
-"""Attack case schema and loader."""
+"""Attack case schema, contracts, and loader."""
 
-from app.attacks.schemas import AttackCase, load_cases
+from app.attacks.schemas import AttackCase, CaseResult, RunCaseRequest, load_cases
 
-__all__ = ["AttackCase", "load_cases"]
+__all__ = ["AttackCase", "CaseResult", "RunCaseRequest", "load_cases"]
+
