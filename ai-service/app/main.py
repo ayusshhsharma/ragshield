@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse
 
 from app.api.deps import require_service_key
 from app.api.routes import attacks as attacks_router
+from app.api.routes import evaluation as evaluation_router
 from app.api.routes import health as health_router
 from app.api.routes import rag as rag_router
 from app.core.config import get_settings
@@ -72,6 +73,11 @@ app.include_router(
 )
 app.include_router(
     attacks_router.router,
+    prefix="/internal",
+    dependencies=[Depends(require_service_key)],
+)
+app.include_router(
+    evaluation_router.router,
     prefix="/internal",
     dependencies=[Depends(require_service_key)],
 )
