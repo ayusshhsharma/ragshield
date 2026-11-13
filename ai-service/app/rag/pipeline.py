@@ -12,6 +12,7 @@ from pydantic import Field, model_validator
 from app.core.config import get_settings
 from app.core.constants import DEFAULT_SYSTEM_PROMPT, REFUSAL_MESSAGE
 from app.core.models import CamelModel
+from app.defenses import scan_text
 from app.providers import LLMProvider, get_provider
 from app.rag.prompts import build_prompts
 from app.rag.vector_store import RetrievedChunk, query_project
@@ -100,10 +101,23 @@ def _apply_input_scanner(
     defense_config: DefenseConfig,
 ) -> DefenseTrigger | None:
     """DF-01 input scanner hook (step 2)."""
-    del query
     if not defense_config.input_scanner.enabled:
         return None
-    raise NotImplementedError("DF-01 input scanner will be implemented in T3.1.")
+    scan_res = scan_text(query, threshold=defense_config.input_scanner.threshold)
+    if scan_res.flagged:
+        match_count = len(scan_res.matches)
+        detail = (
+            f"Input scanner flagged query (score={scan_res.score:.2f}, "
+            f"threshold={defense_config.input_scanner.threshold:.2f}, "
+            f"matches={match_count})"
+        )
+        return DefenseTrigger(
+            id="DF-01",
+            action="blocked",
+            detail=detail,
+            score=scan_res.score,
+        )
+    return None
 
 
 def _apply_document_scanner(
