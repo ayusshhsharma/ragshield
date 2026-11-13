@@ -176,3 +176,40 @@ def delete_project(project_id: str) -> None:
     except NotFoundError:
         logger.info("Project vector collection already absent", extra={"projectId": pid})
 
+
+def ingest_demo_corpus(
+    project_id: str,
+    chunk_size: int = 500,
+    chunk_overlap: int = 80,
+) -> list[dict[str, Any]]:
+    """Ingest all synthetic demo corpus documents for a project into ChromaDB."""
+    import uuid
+
+    from app.rag.chunker import chunk_text
+    from app.rag.extractors import extract_text
+    from app.seed import SEED_DIR, SEED_FILENAMES
+
+    pid = _require_non_empty(project_id, "project_id")
+    docs_out: list[dict[str, Any]] = []
+    for name in SEED_FILENAMES:
+        raw_bytes = (SEED_DIR / name).read_bytes()
+        text = extract_text(name, raw_bytes)
+        chunks = chunk_text(text, size=chunk_size, overlap=chunk_overlap)
+        doc_id = uuid.uuid4().hex[:24]
+        chunk_count = ingest_document(
+            project_id=pid,
+            document_id=doc_id,
+            source=name,
+            chunks=chunks,
+        )
+        docs_out.append(
+            {
+                "name": name,
+                "chunk_count": chunk_count,
+                "char_count": len(text),
+                "document_id": doc_id,
+            }
+        )
+    return docs_out
+
+

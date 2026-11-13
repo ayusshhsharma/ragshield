@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, File, Form, UploadFile
@@ -20,8 +19,12 @@ from app.rag.pipeline import (
     RagConfig,
     run_rag_pipeline,
 )
-from app.rag.vector_store import delete_document, delete_project, ingest_document
-from app.seed import SEED_DIR, SEED_FILENAMES
+from app.rag.vector_store import (
+    delete_document,
+    delete_project,
+    ingest_demo_corpus,
+    ingest_document,
+)
 
 router = APIRouter(prefix="/rag", tags=["rag"])
 
@@ -144,26 +147,20 @@ async def ingest_endpoint(
 @router.post("/ingest-demo", response_model=IngestDemoResponse)
 async def ingest_demo_endpoint(body: IngestDemoRequest) -> IngestDemoResponse:
     """Ingest all 5 synthetic seed corpus documents for a project."""
-    docs_out: list[DemoDocumentItem] = []
-    for name in SEED_FILENAMES:
-        raw_bytes = (SEED_DIR / name).read_bytes()
-        text = extract_text(name, raw_bytes)
-        chunks = chunk_text(text, size=body.chunk_size, overlap=body.chunk_overlap)
-        doc_id = uuid.uuid4().hex[:24]
-        chunk_count = ingest_document(
-            project_id=body.project_id,
-            document_id=doc_id,
-            source=name,
-            chunks=chunks,
+    raw_docs = ingest_demo_corpus(
+        project_id=body.project_id,
+        chunk_size=body.chunk_size,
+        chunk_overlap=body.chunk_overlap,
+    )
+    docs_out = [
+        DemoDocumentItem(
+            name=d["name"],
+            chunk_count=d["chunk_count"],
+            char_count=d["char_count"],
+            document_id=d["document_id"],
         )
-        docs_out.append(
-            DemoDocumentItem(
-                name=name,
-                chunk_count=chunk_count,
-                char_count=len(text),
-                document_id=doc_id,
-            )
-        )
+        for d in raw_docs
+    ]
     return IngestDemoResponse(documents=docs_out)
 
 

@@ -26,6 +26,8 @@ build/
 coverage/
 .nyc_output/
 *.lcov
+results.json
+**/results.json
 
 # ── Logs ──────────────────────────────────────────────────────────────────────
 *.log
