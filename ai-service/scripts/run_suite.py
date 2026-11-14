@@ -358,21 +358,22 @@ async def run_ablation_suite(
             break
 
     # Print Ablation Summary Table
-    width = 86
+    width = 96
     subsep = "-" * width
     print("\n" + "=" * width)
     print("ABLATION COMPARISON MATRIX".center(width))
     print("=" * width)
     print(
         f"{'Configuration':<24} {'ASR (%)':>10} {'Block (%)':>12} "
-        f"{'Safe (%)':>10} {'FPR (%)':>10} {'Avg Lat (ms)':>14}"
+        f"{'Safe (%)':>10} {'Detect (%)':>12} {'FPR (%)':>10} {'Def Lat (ms)':>14}"
     )
     print(subsep)
     for label, data in ablation_results.items():
         m: Metrics = data["metrics"]
         print(
             f"{label:<24} {m.asr.mean:>9.2f}% {m.blocking_rate:>11.2f}% "
-            f"{m.safe_rate:>9.2f}% {m.benign.fpr:>9.2f}% {m.latency.avg_ms:>13.2f}"
+            f"{m.safe_rate:>9.2f}% {m.detection_rate:>11.2f}% "
+            f"{m.benign.fpr:>9.2f}% {m.latency.avg_defense_ms:>13.2f}"
         )
     print("=" * width + "\n")
     return ablation_results
