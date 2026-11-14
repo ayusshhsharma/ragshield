@@ -202,18 +202,25 @@ def test_ingest_validation_errors(client, service_key, isolated_env) -> None:
     assert bad_overlap.json()["error"]["code"] == "VALIDATION_ERROR"
 
 
-def test_unwired_defenses_return_501_not_implemented(client, service_key, isolated_env) -> None:
+def test_all_defenses_wired_query_succeeds(client, service_key, isolated_env) -> None:
     resp = client.post(
         "/internal/rag/query",
         headers=_headers(service_key),
         json={
-            "projectId": "proj-501",
-            "query": "test",
-            "defenseConfig": {"outputValidator": {"enabled": True}},
+            "projectId": "proj-wired",
+            "query": "What is the return window?",
+            "defenseConfig": {
+                "inputScanner": {"enabled": True, "threshold": 0.5},
+                "documentScanner": {"enabled": True, "threshold": 0.5},
+                "instructionIsolation": {"enabled": True},
+                "outputValidator": {"enabled": True},
+            },
         },
     )
-    assert resp.status_code == 501
-    assert resp.json()["error"]["code"] == "NOT_IMPLEMENTED"
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "answer" in data
+    assert "blocked" in data
 
 
 async def test_pipeline_inserts_injected_chunks_and_supports_isolation(isolated_env) -> None:

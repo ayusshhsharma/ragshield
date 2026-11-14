@@ -12,7 +12,7 @@ from pydantic import Field, model_validator
 from app.core.config import get_settings
 from app.core.constants import DEFAULT_SYSTEM_PROMPT, REFUSAL_MESSAGE
 from app.core.models import CamelModel
-from app.defenses import scan_text
+from app.defenses import scan_text, validate_output
 from app.providers import LLMProvider, get_provider
 from app.rag.prompts import build_prompts
 from app.rag.vector_store import RetrievedChunk, query_project
@@ -86,6 +86,7 @@ class PipelineResult(CamelModel):
     """Full output of a single RAG pipeline execution."""
 
     answer: str
+    raw_answer: str | None = None
     blocked: bool = False
     blocked_by: str | None = None
     retrieved_chunks: list[ChunkInfo] = Field(default_factory=list)
@@ -165,10 +166,17 @@ def _apply_output_validator(
     defense_config: DefenseConfig,
 ) -> DefenseTrigger | None:
     """DF-05 output validator hook (step 8)."""
-    del answer, system_prompt
     if not defense_config.output_validator.enabled:
         return None
-    raise NotImplementedError("DF-05 output validator will be implemented in T3.3.")
+    val_res = validate_output(answer, system_prompt=system_prompt)
+    if val_res.flagged:
+        return DefenseTrigger(
+            id="DF-05",
+            action="blocked",
+            detail=f"Output validator flagged response: {val_res.reason}",
+            score=1.0,
+        )
+    return None
 
 
 def _to_chunk_info(chunk: RetrievedChunk) -> ChunkInfo:
@@ -277,6 +285,7 @@ async def run_rag_pipeline(
     )
 
     answer = llm_result.text
+    raw_answer = answer
     blocked = False
     blocked_by: str | None = None
 
@@ -302,6 +311,7 @@ async def run_rag_pipeline(
     )
     return PipelineResult(
         answer=answer,
+        raw_answer=raw_answer,
         blocked=blocked,
         blocked_by=blocked_by,
         retrieved_chunks=working_chunks,

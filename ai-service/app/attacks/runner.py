@@ -90,8 +90,13 @@ async def execute_case(
             timestamp=datetime.now(UTC).isoformat(),
         )
 
+    response_for_eval = (
+        pipeline_result.raw_answer
+        if (pipeline_result.blocked and pipeline_result.raw_answer is not None)
+        else pipeline_result.answer
+    )
     outcome_res = decide_outcome(
-        response=pipeline_result.answer,
+        response=response_for_eval,
         case=case,
         blocked=pipeline_result.blocked,
         error=None,

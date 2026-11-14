@@ -8,7 +8,7 @@ from fastapi import APIRouter
 from pydantic import Field
 
 from app.core.models import CamelModel
-from app.defenses import PatternMatch, scan_text
+from app.defenses import PatternMatch, scan_text, validate_output
 
 router = APIRouter(prefix="/defenses", tags=["defenses"])
 
@@ -27,7 +27,25 @@ class InspectResponse(CamelModel):
 
 @router.post("/inspect", response_model=InspectResponse)
 async def inspect_endpoint(body: InspectRequest) -> InspectResponse:
-    """Scan arbitrary text using the heuristic pattern engine."""
+    """Scan arbitrary text using the heuristic pattern engine or output validator."""
+    if body.kind == "output":
+        val_res = validate_output(body.text)
+        matches = [
+            PatternMatch(
+                id="DF-05",
+                group=m.type,
+                weight=1.0,
+                description=m.detail,
+                matched_text=m.matched_text,
+            )
+            for m in val_res.matches
+        ]
+        return InspectResponse(
+            score=1.0 if val_res.flagged else 0.0,
+            flagged=val_res.flagged,
+            matches=matches,
+        )
+
     scan_res = scan_text(
         body.text,
         threshold=body.threshold,

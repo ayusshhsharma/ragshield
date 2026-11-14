@@ -38,7 +38,7 @@ If behind schedule, cut UI polish (T5.10) first, never evaluation, tests, or the
 ## Phase 3 — Defenses
 - [x] **T3.1 Pattern engine + DF-01.** `scan_text`, normalization, patterns per `architecture.md §9`, input scanner integrated, `/internal/defenses/inspect`. *Accept:* tests: ≥ 15 malicious strings flagged (incl. Hinglish/Devanagari), ≥ 15 benign strings not flagged, zero-width evasion normalised, threshold respected.
 - [x] **T3.2 DF-02 document scanner.** Chunk dropping, trigger record with dropped indices. *Accept:* poisoned chunk dropped, clean chunks kept, benign docs unaffected (tests on seed text: no seed chunk flagged at threshold 0.5).
-- [ ] **T3.3 DF-03 + DF-05.** Isolation prompt (already built T1.5) selectable; output validator with registry, URL, base64, system-prompt-echo checks. *Accept:* validator tests incl. base64-encoded secret and link exfil; benign answers not flagged.
+- [x] **T3.3 DF-03 + DF-05.** Isolation prompt (already built T1.5) selectable; output validator with registry, URL, base64, system-prompt-echo checks. *Accept:* validator tests incl. base64-encoded secret and link exfil; benign answers not flagged.
 - [ ] **T3.4 Wire defenses + CLI ablation.** Pipeline honours `defenseConfig` in the order of `architecture.md §8`; `defensesTriggered`, `blockedBy`, `defenseLatencyMs` populated; CLI `--ablation` runs each defense alone plus all combined. *Accept:* mock protected run shows ASR below baseline; benign FPR reported; unit test that each defense toggles independently. **HUMAN gate T3.4-H:** run Gemini baseline vs protected (`--repeats 1`), sanity-check numbers, record in `docs/debugging.md` decision log.
 
 ## Phase 4 — Express backend
