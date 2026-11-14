@@ -124,10 +124,39 @@ def _apply_document_scanner(
     chunks: list[ChunkInfo],
     defense_config: DefenseConfig,
 ) -> tuple[list[ChunkInfo], DefenseTrigger | None]:
-    """DF-02 document scanner hook (step 5)."""
+    """DF-02 document scanner hook (step 5).
+
+    Scans every chunk with threshold from defenseConfig.documentScanner.
+    Drops chunks scoring >= threshold. Records trigger DF-02 with dropped indices.
+    Never blocks the request by itself.
+    """
     if not defense_config.document_scanner.enabled:
         return chunks, None
-    raise NotImplementedError("DF-02 document scanner will be implemented in T3.2.")
+
+    threshold = defense_config.document_scanner.threshold
+    clean_chunks: list[ChunkInfo] = []
+    dropped_indices: list[int] = []
+    max_score = 0.0
+
+    for idx, chunk in enumerate(chunks):
+        scan_res = scan_text(chunk.text, threshold=threshold, is_document=True)
+        if scan_res.flagged:
+            dropped_indices.append(idx)
+            if scan_res.score > max_score:
+                max_score = scan_res.score
+        else:
+            clean_chunks.append(chunk)
+
+    if dropped_indices:
+        trigger = DefenseTrigger(
+            id="DF-02",
+            action="dropped_chunks",
+            detail=f"Dropped {len(dropped_indices)} chunk(s) at indices: {dropped_indices}",
+            score=max_score,
+        )
+        return clean_chunks, trigger
+
+    return chunks, None
 
 
 def _apply_output_validator(

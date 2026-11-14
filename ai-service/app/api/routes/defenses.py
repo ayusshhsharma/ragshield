@@ -28,9 +28,14 @@ class InspectResponse(CamelModel):
 @router.post("/inspect", response_model=InspectResponse)
 async def inspect_endpoint(body: InspectRequest) -> InspectResponse:
     """Scan arbitrary text using the heuristic pattern engine."""
-    scan_res = scan_text(body.text, threshold=body.threshold)
+    scan_res = scan_text(
+        body.text,
+        threshold=body.threshold,
+        is_document=(body.kind == "document"),
+    )
     return InspectResponse(
         score=scan_res.score,
         flagged=scan_res.flagged,
         matches=scan_res.matches,
     )
+

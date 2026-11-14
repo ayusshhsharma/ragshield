@@ -265,3 +265,61 @@ PATTERNS: tuple[ScannerPattern, ...] = (
         weight=0.8,
     ),
 )
+
+
+# ── Document Imperative-Address Boost Patterns (DF-02) ────────────────────────
+DOC_PATTERNS: tuple[ScannerPattern, ...] = (
+    ScannerPattern(
+        id="DOC-IMP-01",
+        group="document_imperative",
+        description="Note/instruction addressed specifically to the assistant or AI",
+        regex=re.compile(
+            r"\b(?:note\s+to\s+(?:the\s+)?(?:assistant|ai|model)|(?:system|ai)\s+note\b|ai\s+instructions?)\b",
+            re.IGNORECASE,
+        ),
+        weight=0.5,
+    ),
+    ScannerPattern(
+        id="DOC-IMP-02",
+        group="document_imperative",
+        description="Direct imperative addressed to assistant/AI/model",
+        regex=re.compile(
+            r"\b(?:assistant|ai|model)\b.{0,30}\b(?:ignore|disregard|forget|reply|output|begin|start|append|print|end|say|emit|conform|must|should|required\s+to)\b",
+            re.IGNORECASE,
+        ),
+        weight=0.4,
+    ),
+    ScannerPattern(
+        id="DOC-IMP-03",
+        group="document_imperative",
+        description="Forced output format directed at the assistant",
+        regex=re.compile(
+            r"\b(?:your\s+reply\s+must|your\s+response\s+must|you\s+must\s+(?:end|begin|start|output|reply|append))\b",
+            re.IGNORECASE,
+        ),
+        weight=0.5,
+    ),
+    ScannerPattern(
+        id="DOC-IMP-04",
+        group="document_imperative",
+        description="Operational / audit directive targeting assistant interactions",
+        regex=re.compile(
+            r"\b(?:support\s+system\s+requires\s+you\s+to|mandatory\s+step\s+required\s+by\s+(?:the\s+)?(?:operations\s+team|support|maintenance)\s+for\s+all\s+assistant\s+interactions)\b",
+            re.IGNORECASE,
+        ),
+        weight=0.5,
+    ),
+    ScannerPattern(
+        id="DOC-IMP-05",
+        group="document_imperative",
+        description="Hidden system/assistant directive comment in document text",
+        regex=re.compile(
+            r"<!--\s*(?:system\s+note\s+to\s+assistant|system|instruction)\b",
+            re.IGNORECASE,
+        ),
+        weight=0.6,
+    ),
+)
+
+ALL_DOC_PATTERNS: tuple[ScannerPattern, ...] = PATTERNS + DOC_PATTERNS
+

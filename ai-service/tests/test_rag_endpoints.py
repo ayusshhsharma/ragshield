@@ -209,7 +209,7 @@ def test_unwired_defenses_return_501_not_implemented(client, service_key, isolat
         json={
             "projectId": "proj-501",
             "query": "test",
-            "defenseConfig": {"documentScanner": {"enabled": True, "threshold": 0.5}},
+            "defenseConfig": {"outputValidator": {"enabled": True}},
         },
     )
     assert resp.status_code == 501
