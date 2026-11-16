@@ -70,6 +70,12 @@ export function errorHandler(err, req, res, _next) {
       .json(formatErrorBody('UNAUTHENTICATED', 'Invalid or expired authentication token.'));
   }
 
+  if (err?.code === 11000) {
+    return res
+      .status(409)
+      .json(formatErrorBody('EMAIL_TAKEN', 'An account with this email address already exists.'));
+  }
+
   log.error({ err: { name: err?.name, message: err?.message, stack: err?.stack } }, 'Unhandled error');
 
   return res

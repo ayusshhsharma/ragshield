@@ -8,6 +8,7 @@ import { env } from './src/config/env.js';
 import { logger } from './src/config/logger.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import { notFoundHandler } from './src/middleware/notFound.js';
+import authRoutes from './src/routes/auth.routes.js';
 import healthRoutes from './src/routes/health.routes.js';
 
 const app = express();
@@ -47,8 +48,26 @@ const globalLimiter = rateLimit({
   },
 });
 
+const authLimiter = rateLimit({
+  windowMs: env.RATE_LIMIT_WINDOW_MS,
+  max: env.AUTH_RATE_LIMIT_MAX,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => env.NODE_ENV === 'test' && !req.headers['x-test-rate-limit'],
+  handler: (_req, res) => {
+    res.status(429).json({
+      error: {
+        code: 'RATE_LIMITED',
+        message: 'Too many authentication attempts, please try again later.',
+        details: {},
+      },
+    });
+  },
+});
+
 app.use('/api', globalLimiter);
 app.use('/api', healthRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
