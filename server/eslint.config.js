@@ -17,6 +17,9 @@ export default [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         setImmediate: 'readonly',
+        FormData: 'readonly',
+        Blob: 'readonly',
+        TextDecoder: 'readonly',
       },
     },
     rules: {

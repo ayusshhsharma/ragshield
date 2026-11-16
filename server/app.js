@@ -9,6 +9,7 @@ import { logger } from './src/config/logger.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import { notFoundHandler } from './src/middleware/notFound.js';
 import authRoutes from './src/routes/auth.routes.js';
+import documentRoutes from './src/routes/document.routes.js';
 import healthRoutes from './src/routes/health.routes.js';
 import projectRoutes from './src/routes/project.routes.js';
 
@@ -70,6 +71,7 @@ app.use('/api', globalLimiter);
 app.use('/api', healthRoutes);
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/projects', documentRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

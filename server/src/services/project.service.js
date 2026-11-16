@@ -1,3 +1,4 @@
+import { Document } from '../models/document.model.js';
 import { Project } from '../models/project.model.js';
 import { createAiClient } from './aiClient.js';
 
@@ -34,6 +35,7 @@ export async function deleteProject(project) {
     // Vector collection may not exist yet or AI service is offline
   }
 
+  await Document.deleteMany({ projectId: project._id });
   await Project.deleteOne({ _id: project._id });
   return { deleted: true };
 }
