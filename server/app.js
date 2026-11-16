@@ -8,6 +8,7 @@ import { env } from './src/config/env.js';
 import { logger } from './src/config/logger.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import { notFoundHandler } from './src/middleware/notFound.js';
+import attackRoutes from './src/routes/attack.routes.js';
 import authRoutes from './src/routes/auth.routes.js';
 import documentRoutes from './src/routes/document.routes.js';
 import healthRoutes from './src/routes/health.routes.js';
@@ -70,6 +71,7 @@ const authLimiter = rateLimit({
 app.use('/api', globalLimiter);
 app.use('/api', healthRoutes);
 app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/attacks', attackRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/projects', documentRoutes);
 

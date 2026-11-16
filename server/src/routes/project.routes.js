@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import * as attackController from '../controllers/attackCase.controller.js';
 import * as projectController from '../controllers/project.controller.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -19,5 +20,8 @@ router.put('/:id/rag-config', asyncHandler(projectController.updateRagConfig));
 
 router.get('/:id/defenses', asyncHandler(projectController.getDefenses));
 router.put('/:id/defenses', asyncHandler(projectController.updateDefenses));
+
+router.post('/:id/attacks/custom', asyncHandler(attackController.createCustom));
+router.delete('/:id/attacks/custom/:caseId', asyncHandler(attackController.deleteCustom));
 
 export default router;
