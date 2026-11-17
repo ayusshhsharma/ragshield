@@ -13,6 +13,7 @@ import authRoutes from './src/routes/auth.routes.js';
 import documentRoutes from './src/routes/document.routes.js';
 import healthRoutes from './src/routes/health.routes.js';
 import projectRoutes from './src/routes/project.routes.js';
+import runRoutes from './src/routes/run.routes.js';
 
 const app = express();
 
@@ -74,6 +75,7 @@ app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/attacks', attackRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/projects', documentRoutes);
+app.use('/api', runRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

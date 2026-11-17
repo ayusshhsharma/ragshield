@@ -2,12 +2,14 @@ import app from './app.js';
 import { connectDB, disconnectDB } from './src/config/db.js';
 import { env } from './src/config/env.js';
 import { logger } from './src/config/logger.js';
+import { recoverStaleRuns } from './src/services/runner.service.js';
 import { seedAttackCases } from './src/services/seed.service.js';
 
 let server;
 
 async function start() {
   await connectDB(env.MONGO_URI);
+  await recoverStaleRuns();
   await seedAttackCases();
 
   server = app.listen(env.PORT, () => {

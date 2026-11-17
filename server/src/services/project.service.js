@@ -1,6 +1,9 @@
 import { AttackCase } from '../models/attackCase.model.js';
+import { AttackResult } from '../models/attackResult.model.js';
 import { Document } from '../models/document.model.js';
+import { Experiment } from '../models/experiment.model.js';
 import { Project } from '../models/project.model.js';
+import { TestRun } from '../models/testRun.model.js';
 import { createAiClient } from './aiClient.js';
 
 export async function listProjects(userId) {
@@ -38,6 +41,9 @@ export async function deleteProject(project) {
 
   await Document.deleteMany({ projectId: project._id });
   await AttackCase.deleteMany({ projectId: project._id, source: 'custom' });
+  await TestRun.deleteMany({ projectId: project._id });
+  await AttackResult.deleteMany({ projectId: project._id });
+  await Experiment.deleteMany({ projectId: project._id });
   await Project.deleteOne({ _id: project._id });
   return { deleted: true };
 }
