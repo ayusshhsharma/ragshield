@@ -5,6 +5,8 @@ import AppLayout from './layouts/AppLayout.jsx';
 import AuthLayout from './layouts/AuthLayout.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import { NotFoundPage, PlaceholderPage } from './pages/PlaceholderPage.jsx';
+import ProjectShellPage from './pages/ProjectShellPage.jsx';
+import ProjectsPage from './pages/ProjectsPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 
 export function AppRoutes() {
@@ -26,27 +28,14 @@ export function AppRoutes() {
               />
             }
           />
-          <Route
-            path="/projects"
-            element={
-              <PlaceholderPage
-                title="Projects"
-                description="Isolated RAG security testing workspaces."
-              />
-            }
-          />
+          <Route path="/projects" element={<ProjectsPage />} />
           <Route
             path="/projects/:id"
             element={<Navigate to="overview" replace />}
           />
           <Route
             path="/projects/:id/:tab"
-            element={
-              <PlaceholderPage
-                title="Project Workspace"
-                description="Documents, RAG config, defenses, attack library, runs, and playground."
-              />
-            }
+            element={<ProjectShellPage />}
           />
           <Route
             path="/runs/:id"

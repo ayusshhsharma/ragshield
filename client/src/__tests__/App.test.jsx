@@ -40,12 +40,12 @@ describe('Client skeleton & dark theme layouts', () => {
     expect(container.firstChild).toHaveClass('bg-base', 'text-ink');
   });
 
-  it('renders placeholder workspace route /projects/:id/:tab for authenticated user', () => {
+  it('renders Projects page on /projects for authenticated user', async () => {
     const mockUser = { id: 'u-1', name: 'Dev Lead', email: 'dev@ragshield.local' };
-    renderAt('/projects/proj-1/defenses', { user: mockUser, token: 'mock-token' });
+    renderAt('/projects', { user: mockUser, token: 'mock-token' });
 
-    expect(screen.getByRole('heading', { name: 'Project Workspace' })).toBeInTheDocument();
-    expect(screen.getByText(/"tab": "defenses"/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Projects' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /new project/i })).toBeInTheDocument();
   });
 
   it('renders 404 NotFound page on unknown routes', () => {
