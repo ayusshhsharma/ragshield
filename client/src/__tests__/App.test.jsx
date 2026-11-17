@@ -3,13 +3,16 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { AppRoutes } from '../App.jsx';
 import { AuthProvider } from '../context/AuthContext.jsx';
+import { ToastProvider } from '../context/ToastContext.jsx';
 
 function renderAt(route, { user = null, token = null } = {}) {
   return render(
     <AuthProvider initialUser={user} initialToken={token}>
-      <MemoryRouter initialEntries={[route]}>
-        <AppRoutes />
-      </MemoryRouter>
+      <ToastProvider>
+        <MemoryRouter initialEntries={[route]}>
+          <AppRoutes />
+        </MemoryRouter>
+      </ToastProvider>
     </AuthProvider>,
   );
 }

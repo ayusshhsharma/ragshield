@@ -17,7 +17,9 @@ import Badge from '../components/Badge.jsx';
 import Button from '../components/Button.jsx';
 import Card from '../components/Card.jsx';
 import ErrorBanner from '../components/ErrorBanner.jsx';
+import DocumentsTab from '../components/project/DocumentsTab.jsx';
 import OverviewTab from '../components/project/OverviewTab.jsx';
+import RagConfigTab from '../components/project/RagConfigTab.jsx';
 import Spinner from '../components/Spinner.jsx';
 import api from '../services/api.js';
 
@@ -206,7 +208,21 @@ export default function ProjectShellPage() {
           />
         )}
 
-        {tab !== 'overview' && (
+        {tab === 'documents' && (
+          <DocumentsTab
+            project={project}
+            onProjectUpdated={fetchProjectData}
+          />
+        )}
+
+        {tab === 'rag-config' && (
+          <RagConfigTab
+            project={project}
+            onProjectUpdated={fetchProjectData}
+          />
+        )}
+
+        {tab !== 'overview' && tab !== 'documents' && tab !== 'rag-config' && (
           <Card className="flex flex-col items-center justify-center p-12 text-center space-y-3 bg-surface/60 border-dashed border-line">
             <div className="w-10 h-10 rounded-full bg-elevated border border-line flex items-center justify-center text-muted">
               {currentTab?.icon && <currentTab.icon className="w-5 h-5" />}
