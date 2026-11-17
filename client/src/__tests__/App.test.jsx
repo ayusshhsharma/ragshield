@@ -4,9 +4,9 @@ import { describe, expect, it } from 'vitest';
 import { AppRoutes } from '../App.jsx';
 import { AuthProvider } from '../context/AuthContext.jsx';
 
-function renderAt(route) {
+function renderAt(route, { user = null, token = null } = {}) {
   return render(
-    <AuthProvider>
+    <AuthProvider initialUser={user} initialToken={token}>
       <MemoryRouter initialEntries={[route]}>
         <AppRoutes />
       </MemoryRouter>
@@ -15,8 +15,16 @@ function renderAt(route) {
 }
 
 describe('Client skeleton & dark theme layouts', () => {
-  it('renders AppLayout with dark theme classes and navigation on /', () => {
-    const { container } = renderAt('/');
+  it('redirects unauthenticated user on / to /login', () => {
+    renderAt('/');
+
+    expect(screen.getByRole('heading', { name: 'Sign in' })).toBeInTheDocument();
+    expect(screen.getByText('Test. Defend. Measure.')).toBeInTheDocument();
+  });
+
+  it('renders AppLayout with dark theme classes and navigation for authenticated user on /', () => {
+    const mockUser = { id: 'u-1', name: 'Dev Lead', email: 'dev@ragshield.local' };
+    const { container } = renderAt('/', { user: mockUser, token: 'mock-token' });
 
     expect(screen.getAllByText('RAGShield').length).toBeGreaterThan(0);
     expect(screen.getByRole('heading', { name: 'Dashboard' })).toBeInTheDocument();
@@ -32,8 +40,9 @@ describe('Client skeleton & dark theme layouts', () => {
     expect(container.firstChild).toHaveClass('bg-base', 'text-ink');
   });
 
-  it('renders placeholder workspace route /projects/:id/:tab', () => {
-    renderAt('/projects/proj-1/defenses');
+  it('renders placeholder workspace route /projects/:id/:tab for authenticated user', () => {
+    const mockUser = { id: 'u-1', name: 'Dev Lead', email: 'dev@ragshield.local' };
+    renderAt('/projects/proj-1/defenses', { user: mockUser, token: 'mock-token' });
 
     expect(screen.getByRole('heading', { name: 'Project Workspace' })).toBeInTheDocument();
     expect(screen.getByText(/"tab": "defenses"/)).toBeInTheDocument();
