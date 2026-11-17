@@ -235,7 +235,7 @@ describe('Runs, Experiments & Runner Service', () => {
 
       // Nock run-case for two cases
       nock(env.AI_SERVICE_URL)
-        .post('/internal/attacks/run-case')
+        .post('/internal/attacks/run-case', (b) => b.case?.caseId === 'AT01-001')
         .reply(200, {
           caseId: 'AT01-001',
           category: 'AT-01',
@@ -258,7 +258,7 @@ describe('Runs, Experiments & Runner Service', () => {
         });
 
       nock(env.AI_SERVICE_URL)
-        .post('/internal/attacks/run-case')
+        .post('/internal/attacks/run-case', (b) => b.case?.caseId === 'BN-001')
         .reply(200, {
           caseId: 'BN-001',
           category: 'BENIGN',
@@ -362,12 +362,12 @@ describe('Runs, Experiments & Runner Service', () => {
 
       // First case fails (500)
       nock(env.AI_SERVICE_URL)
-        .post('/internal/attacks/run-case')
+        .post('/internal/attacks/run-case', (b) => b.case?.caseId === 'AT01-001')
         .reply(500, { error: { code: 'INTERNAL_ERROR', message: 'LLM crashed' } });
 
       // Second case succeeds
       nock(env.AI_SERVICE_URL)
-        .post('/internal/attacks/run-case')
+        .post('/internal/attacks/run-case', (b) => b.case?.caseId === 'BN-001')
         .reply(200, {
           caseId: 'BN-001',
           category: 'BENIGN',
