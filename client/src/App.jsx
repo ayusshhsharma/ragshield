@@ -9,6 +9,7 @@ import { NotFoundPage, PlaceholderPage } from './pages/PlaceholderPage.jsx';
 import ProjectShellPage from './pages/ProjectShellPage.jsx';
 import ProjectsPage from './pages/ProjectsPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
+import RunDetailPage from './pages/RunDetailPage.jsx';
 
 export function AppRoutes() {
   return (
@@ -38,15 +39,7 @@ export function AppRoutes() {
             path="/projects/:id/:tab"
             element={<ProjectShellPage />}
           />
-          <Route
-            path="/runs/:id"
-            element={
-              <PlaceholderPage
-                title="Run Detail"
-                description="Metrics, outcome distribution, and per-case results."
-              />
-            }
-          />
+          <Route path="/runs/:id" element={<RunDetailPage />} />
           <Route
             path="/experiments/:id"
             element={

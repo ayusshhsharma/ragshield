@@ -57,7 +57,7 @@ If behind schedule, cut UI polish (T5.10) first, never evaluation, tests, or the
 - [x] **T5.4 Defenses tab.** Four defense cards with toggles, threshold sliders for DF-01/02, save button, notice that no defense is a complete solution.
 - [x] **T5.5 Attack library tab + custom case form.** Category filter chips, search, detail drawer, synthetic-data banner, custom case modal with browser regex testing and delete.
 - [x] **T5.6 Runs tab.** Start baseline/protected/experiment (options modal), runs table with live progress polling.
-- [ ] **T5.7 Run detail.** Metric grid, outcome bar, filters, paginated results table, result drawer, report download, cancel.
+- [x] **T5.7 Run detail.** Metric grid, outcome bar, filters, paginated results table, result drawer, report download, cancel.
 - [ ] **T5.8 Experiment compare + charts.**
 - [ ] **T5.9 Dashboard + Playground.**
 - [ ] **T5.10 States and polish.** Loading/empty/error everywhere, responsive pass, a11y pass, synthetic-data banner.
