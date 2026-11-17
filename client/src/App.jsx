@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import { ToastProvider } from './context/ToastContext.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
 import AuthLayout from './layouts/AuthLayout.jsx';
+import ExperimentComparePage from './pages/ExperimentComparePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import { NotFoundPage, PlaceholderPage } from './pages/PlaceholderPage.jsx';
 import ProjectShellPage from './pages/ProjectShellPage.jsx';
@@ -40,15 +41,7 @@ export function AppRoutes() {
             element={<ProjectShellPage />}
           />
           <Route path="/runs/:id" element={<RunDetailPage />} />
-          <Route
-            path="/experiments/:id"
-            element={
-              <PlaceholderPage
-                title="Experiment Comparison"
-                description="Side-by-side baseline vs protected metrics and defense overhead."
-              />
-            }
-          />
+          <Route path="/experiments/:id" element={<ExperimentComparePage />} />
         </Route>
       </Route>
 
