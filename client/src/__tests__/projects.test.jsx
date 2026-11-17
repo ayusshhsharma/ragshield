@@ -275,7 +275,7 @@ describe('ProjectShellPage & Tab Bar (/projects/:id/:tab)', () => {
 
     render(
       <AuthProvider initialUser={mockUser} initialToken="mock-jwt-token">
-        <MemoryRouter initialEntries={['/projects/proj-123/attacks']}>
+        <MemoryRouter initialEntries={['/projects/proj-123/runs']}>
           <Routes>
             <Route path="/projects/:id/:tab" element={<ProjectShellPage />} />
           </Routes>
@@ -285,12 +285,12 @@ describe('ProjectShellPage & Tab Bar (/projects/:id/:tab)', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Attack Library — Coming in next task'),
+        screen.getByText('Runs — Coming in next task'),
       ).toBeInTheDocument();
     });
 
     expect(
-      screen.getByText(/This module will be built in Task T5.5/i),
+      screen.getByText(/This module will be built in Task T5.6/i),
     ).toBeInTheDocument();
   });
 });
