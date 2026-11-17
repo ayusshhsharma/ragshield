@@ -1,6 +1,9 @@
 import { X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export default function Drawer({
   isOpen,
   onClose,
@@ -14,14 +17,64 @@ export default function Drawer({
   useEffect(() => {
     if (!isOpen) return undefined;
 
+    const previouslyFocused = document.activeElement;
+    const drawerEl = drawerRef.current;
+
+    if (drawerEl) {
+      const focusables = drawerEl.querySelectorAll(FOCUSABLE_SELECTOR);
+      if (focusables.length > 0) {
+        focusables[0].focus();
+      } else {
+        drawerEl.focus();
+      }
+    }
+
     function handleKeyDown(e) {
       if (e.key === 'Escape') {
         onClose();
+        return;
+      }
+
+      if (e.key === 'Tab' && drawerRef.current) {
+        const focusables = Array.from(
+          drawerRef.current.querySelectorAll(FOCUSABLE_SELECTOR),
+        );
+        if (focusables.length === 0) {
+          e.preventDefault();
+          return;
+        }
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (e.shiftKey) {
+          if (
+            document.activeElement === first ||
+            !drawerRef.current.contains(document.activeElement)
+          ) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else if (
+          document.activeElement === last ||
+          !drawerRef.current.contains(document.activeElement)
+        ) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     }
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      if (
+        previouslyFocused &&
+        typeof previouslyFocused.focus === 'function' &&
+        document.contains(previouslyFocused)
+      ) {
+        previouslyFocused.focus();
+      }
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -34,16 +87,17 @@ export default function Drawer({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+      <div className="fixed inset-y-0 right-0 pl-4 sm:pl-10 max-w-full flex">
         <div
           ref={drawerRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="drawer-title"
-          className={`w-screen ${maxWidth} bg-surface border-l border-line shadow-2xl flex flex-col animate-in slide-in-from-right duration-200`}
+          tabIndex={-1}
+          className={`w-screen ${maxWidth} bg-surface border-l border-line shadow-2xl flex flex-col animate-in slide-in-from-right duration-200 focus:outline-none`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-line">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-line shrink-0">
             <div className="min-w-0 pr-4">
               <h2
                 id="drawer-title"
@@ -69,7 +123,9 @@ export default function Drawer({
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">{children}</div>
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+            {children}
+          </div>
         </div>
       </div>
     </div>

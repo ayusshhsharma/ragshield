@@ -160,7 +160,7 @@ export default function ProjectShellPage() {
 
           <Button
             type="button"
-            variant="brand"
+            variant="primary"
             size="sm"
             onClick={() => navigate(`/projects/${project.id}/runs`)}
             className="self-start sm:self-auto"
@@ -187,7 +187,7 @@ export default function ProjectShellPage() {
                 to={`/projects/${project.id}/${t.id}`}
                 role="tab"
                 aria-selected={isActive}
-                className={`flex items-center gap-2 py-3 text-sm border-b-2 font-medium transition-colors focus:outline-none ${
+                className={`flex items-center gap-2 py-3 px-1 text-sm border-b-2 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-t ${
                   isActive
                     ? 'border-brand text-brand'
                     : 'border-transparent text-muted hover:text-ink hover:border-line'

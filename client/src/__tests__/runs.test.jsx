@@ -44,10 +44,9 @@ const mockRuns = [
     experimentId: 'exp-999',
     progress: { total: 58, completed: 58, errors: 0 },
     metrics: {
-      attackSuccessRate: 0.724,
-      falsePositiveRate: 0.05,
+      asr: { mean: 72.4, min: 70.0, max: 75.0 },
+      benign: { fpr: 5.0, successRate: 95.0 },
       blockingRate: 0.0,
-      totalCases: 58,
     },
     createdAt: '2026-11-17T14:00:00.000Z',
   },
@@ -104,8 +103,11 @@ describe('RunsTab (/projects/:id/runs)', () => {
 
     expect(screen.getByText('completed')).toBeInTheDocument();
     expect(screen.getByText('running')).toBeInTheDocument();
-    expect(screen.getByText('72.4%')).toBeInTheDocument();
-    expect(screen.getByText('5.0%')).toBeInTheDocument();
+    expect(screen.getByText('72.40%')).toBeInTheDocument();
+    expect(screen.getByText('5.00%')).toBeInTheDocument();
+    expect(screen.getByTestId('synthetic-data-banner')).toHaveTextContent(
+      'All secrets and customer data in this tool are synthetic.',
+    );
 
     // Link to experiment compare
     const compareLinks = screen.getAllByRole('link', { name: /compare/i });

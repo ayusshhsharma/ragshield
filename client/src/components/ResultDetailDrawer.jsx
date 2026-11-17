@@ -11,6 +11,7 @@ import ChunkCard from './ChunkCard.jsx';
 import CodeBlock from './CodeBlock.jsx';
 import Drawer from './Drawer.jsx';
 import OutcomeBadge from './OutcomeBadge.jsx';
+import { formatLatency } from '../utils/format.js';
 
 export default function ResultDetailDrawer({
   isOpen,
@@ -61,8 +62,8 @@ export default function ResultDetailDrawer({
           <div className="flex items-center gap-3 text-xs font-mono text-muted">
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5 text-muted" aria-hidden="true" />
-              {latencyMs} ms
-              {defenseLatencyMs > 0 && ` (${defenseLatencyMs} ms defense)`}
+              {formatLatency(latencyMs)}
+              {defenseLatencyMs > 0 && ` (${formatLatency(defenseLatencyMs)} defense)`}
             </span>
           </div>
         </div>

@@ -177,20 +177,20 @@ describe('ExperimentComparePage (/experiments/:id)', () => {
     expect(metricTable).toHaveTextContent('Attack Success Rate (ASR)');
     expect(metricTable).toHaveTextContent('False Positive Rate (FPR)');
 
-    // Lower ASR (-66.6%) -> green (text-success)
-    const asrDelta = screen.getByText('-66.6%');
+    // Lower ASR (-66.60%) -> green (text-success)
+    const asrDelta = screen.getByText('-66.60%');
     expect(asrDelta).toHaveClass('text-success');
 
-    // Higher FPR (+10.0%) -> red (text-danger)
-    const fprDelta = screen.getByText('+10.0%');
+    // Higher FPR (+10.00%) -> red (text-danger)
+    const fprDelta = screen.getByText('+10.00%');
     expect(fprDelta).toHaveClass('text-danger');
 
-    // Higher Blocking Rate (+66.7%) -> green (text-success)
-    const blockingDelta = screen.getByText('+66.7%');
+    // Higher Blocking Rate (+66.70%) -> green (text-success)
+    const blockingDelta = screen.getByText('+66.70%');
     expect(blockingDelta).toHaveClass('text-success');
 
-    // Higher Latency (+65.5 ms) -> warning (text-warning)
-    const latencyDelta = screen.getByText('+65.5 ms', {
+    // Higher Latency (+66 ms) -> warning (text-warning)
+    const latencyDelta = screen.getByText('+66 ms', {
       selector: '[data-testid="delta-badge"]',
     });
     expect(latencyDelta).toHaveClass('text-warning');

@@ -31,6 +31,7 @@ import RunStatusBadge from '../components/RunStatusBadge.jsx';
 import Spinner from '../components/Spinner.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import api from '../services/api.js';
+import { formatLatency } from '../utils/format.js';
 
 const OUTCOME_OPTIONS = [
   { value: '', label: 'All outcomes' },
@@ -344,7 +345,7 @@ export default function RunDetailPage() {
           <div className="flex items-center gap-2 text-xs text-muted">
             <Link
               to={run.projectId ? `/projects/${run.projectId}/runs` : '/projects'}
-              className="inline-flex items-center gap-1 hover:text-ink transition-colors"
+              className="inline-flex items-center gap-1 hover:text-ink transition-colors focus:outline-none focus:ring-2 focus:ring-brand rounded"
             >
               <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
               Back to Runs
@@ -354,7 +355,7 @@ export default function RunDetailPage() {
                 <span>•</span>
                 <Link
                   to={`/experiments/${run.experimentId}`}
-                  className="inline-flex items-center gap-1 text-brand hover:text-brand-hover"
+                  className="inline-flex items-center gap-1 text-brand hover:text-brand-hover focus:outline-none focus:ring-2 focus:ring-brand rounded"
                 >
                   <GitCompare className="w-3.5 h-3.5" aria-hidden="true" />
                   View Experiment Comparison
@@ -374,7 +375,9 @@ export default function RunDetailPage() {
               {run.mode === 'protected' ? 'Protected' : 'Baseline'}
             </Badge>
             <RunStatusBadge status={run.status} />
-            <span className="text-xs font-mono text-muted">ID: {run.id}</span>
+            <span className="text-xs font-mono text-muted break-all">
+              ID: {run.id}
+            </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-muted">
@@ -430,8 +433,8 @@ export default function RunDetailPage() {
             </span>
           </div>
           <ProgressBar
-            completed={run.progress?.completed ?? 0}
-            total={run.progress?.total ?? 0}
+            value={run.progress?.completed ?? 0}
+            max={run.progress?.total ?? 0}
             showLabel={false}
           />
         </Card>
@@ -726,7 +729,7 @@ export default function RunDetailPage() {
                           )}
                         </td>
                         <td className="py-3 px-4 text-right font-mono text-muted whitespace-nowrap">
-                          {item.latencyMs ?? 0} ms
+                          {formatLatency(item.latencyMs ?? 0)}
                         </td>
                         <td className="py-3 px-4 text-right whitespace-nowrap">
                           <Button

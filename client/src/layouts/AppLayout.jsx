@@ -1,5 +1,5 @@
 import { FolderKanban, LayoutDashboard, LogOut, Menu, Shield, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -12,6 +12,15 @@ export default function AppLayout({ children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileOpen) return undefined;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [mobileOpen]);
 
   const handleLogout = () => {
     logout();
@@ -119,7 +128,7 @@ export default function AppLayout({ children }) {
       )}
 
       {/* Main content */}
-      <div className="flex-1 md:pl-60 min-w-0">
+      <div className="flex-1 md:pl-60 min-w-0 overflow-x-hidden">
         <main className="max-w-[1200px] mx-auto px-4 py-6 md:px-8">
           {children || <Outlet />}
         </main>

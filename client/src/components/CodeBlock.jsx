@@ -31,7 +31,7 @@ export default function CodeBlock({
       <button
         type="button"
         onClick={handleCopy}
-        className="absolute top-2 right-2 p-1.5 rounded bg-elevated border border-line text-muted hover:text-ink focus:outline-none focus:ring-2 focus:ring-brand opacity-0 group-hover:opacity-100 transition-opacity z-10"
+        className="absolute top-2 right-2 p-1.5 rounded bg-elevated border border-line text-muted hover:text-ink focus:outline-none focus:ring-2 focus:ring-brand opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10"
         aria-label="Copy code"
         title="Copy to clipboard"
       >

@@ -1,18 +1,17 @@
 import {
   ArrowRight,
-  Calendar,
-  ExternalLink,
+  Info,
   Layers,
   Play,
-  RefreshCw,
-  Shield,
   Sparkles,
+  X,
   Zap,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useToast } from '../../context/ToastContext.jsx';
 import api from '../../services/api.js';
+import { formatPercentTable } from '../../utils/format.js';
 import Badge from '../Badge.jsx';
 import Button from '../Button.jsx';
 import EmptyState from '../EmptyState.jsx';
@@ -23,12 +22,12 @@ import Spinner from '../Spinner.jsx';
 import RunOptionsModal from './RunOptionsModal.jsx';
 
 export default function RunsTab({ project }) {
-  const navigate = useNavigate();
   const toast = useToast();
 
   const [runs, setRuns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -99,6 +98,28 @@ export default function RunsTab({ project }) {
 
   return (
     <div className="space-y-6">
+      {/* Dismissible Synthetic-Data Safety Banner (docs/design.md §6) */}
+      {!bannerDismissed && (
+        <div
+          role="status"
+          data-testid="synthetic-data-banner"
+          className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg bg-info/10 border border-info/30 text-xs text-info"
+        >
+          <div className="flex items-center gap-2">
+            <Info className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <span>All secrets and customer data in this tool are synthetic.</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setBannerDismissed(true)}
+            aria-label="Dismiss notice"
+            className="p-1 rounded text-info/80 hover:text-info hover:bg-info/20 focus:outline-none focus:ring-2 focus:ring-brand shrink-0"
+          >
+            <X className="w-3.5 h-3.5" aria-hidden="true" />
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -134,7 +155,7 @@ export default function RunsTab({ project }) {
 
           <Button
             type="button"
-            variant="brand"
+            variant="primary"
             size="sm"
             onClick={() => handleOpenModal('experiment')}
           >
@@ -219,14 +240,20 @@ export default function RunsTab({ project }) {
                 {runs.map((r) => {
                   const progressTotal = r.progress?.total || 0;
                   const progressCompleted = r.progress?.completed || 0;
-                  const asr =
-                    r.metrics?.attackSuccessRate != null
-                      ? `${(r.metrics.attackSuccessRate * 100).toFixed(1)}%`
-                      : '—';
-                  const fpr =
-                    r.metrics?.falsePositiveRate != null
-                      ? `${(r.metrics.falsePositiveRate * 100).toFixed(1)}%`
-                      : '—';
+                  const asrValue =
+                    r.metrics?.asr?.mean != null
+                      ? r.metrics.asr.mean
+                      : r.metrics?.attackSuccessRate != null
+                        ? r.metrics.attackSuccessRate * 100
+                        : null;
+                  const fprValue =
+                    r.metrics?.benign?.fpr != null
+                      ? r.metrics.benign.fpr
+                      : r.metrics?.falsePositiveRate != null
+                        ? r.metrics.falsePositiveRate * 100
+                        : null;
+                  const asr = formatPercentTable(asrValue);
+                  const fpr = formatPercentTable(fprValue);
 
                   const formattedDate = r.createdAt
                     ? new Date(r.createdAt).toLocaleDateString(undefined, {

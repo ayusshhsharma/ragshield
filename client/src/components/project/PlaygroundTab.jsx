@@ -21,6 +21,7 @@ import ErrorBanner from '../ErrorBanner.jsx';
 import Spinner from '../Spinner.jsx';
 import Toggle from '../Toggle.jsx';
 import api from '../../services/api.js';
+import { formatLatency } from '../../utils/format.js';
 
 const QUICK_PROMPTS = [
   {
@@ -292,7 +293,7 @@ export default function PlaygroundTab({ project, documentsCount = 0 }) {
 
               <div className="flex items-center gap-1.5 text-xs font-mono text-muted">
                 <Clock className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>{Math.round(result.latencyMs ?? 0)} ms</span>
+                <span>{formatLatency(result.latencyMs ?? 0)}</span>
               </div>
             </div>
 

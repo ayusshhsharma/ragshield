@@ -25,6 +25,7 @@ import ProgressBar from '../components/ProgressBar.jsx';
 import RunStatusBadge from '../components/RunStatusBadge.jsx';
 import Spinner from '../components/Spinner.jsx';
 import api from '../services/api.js';
+import { formatLatency } from '../utils/format.js';
 
 function formatDateTime(iso) {
   if (!iso) return '—';
@@ -220,7 +221,7 @@ export default function ExperimentComparePage() {
                   ? `/projects/${experiment.projectId}/runs`
                   : '/projects'
               }
-              className="inline-flex items-center gap-1 hover:text-ink transition-colors"
+              className="inline-flex items-center gap-1 hover:text-ink transition-colors focus:outline-none focus:ring-2 focus:ring-brand rounded"
             >
               <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
               Back to Runs
@@ -233,7 +234,7 @@ export default function ExperimentComparePage() {
               Experiment Comparison
             </h1>
             <RunStatusBadge status={experiment.status} />
-            <span className="text-xs font-mono text-muted">
+            <span className="text-xs font-mono text-muted break-all">
               ID: {experiment.id}
             </span>
           </div>
@@ -437,13 +438,13 @@ export default function ExperimentComparePage() {
                 <div>
                   <span className="text-muted block text-[11px]">Baseline avg</span>
                   <span className="text-ink font-semibold">
-                    {Math.round(comparison.avgLatency?.baseline ?? 0)} ms
+                    {formatLatency(comparison.avgLatency?.baseline ?? 0)}
                   </span>
                 </div>
                 <div>
                   <span className="text-muted block text-[11px]">Protected avg</span>
                   <span className="text-ink font-semibold">
-                    {Math.round(comparison.avgLatency?.protected ?? 0)} ms
+                    {formatLatency(comparison.avgLatency?.protected ?? 0)}
                   </span>
                 </div>
               </div>

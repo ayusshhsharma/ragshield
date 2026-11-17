@@ -1,8 +1,14 @@
 import { ArrowDownRight, ArrowUpRight, HelpCircle, Minus } from 'lucide-react';
+import { formatLatency, formatPercentTable } from '../utils/format.js';
 import Card from './Card.jsx';
 
-function DeltaBadge({ delta, unit = '%', invert = false, isNeutral = false }) {
-  if (delta === null || delta === undefined || isNaN(delta)) {
+function DeltaBadge({
+  delta,
+  kind = 'percent',
+  invert = false,
+  isNeutral = false,
+}) {
+  if (delta === null || delta === undefined || Number.isNaN(Number(delta))) {
     return <span className="text-muted font-mono">—</span>;
   }
 
@@ -11,7 +17,7 @@ function DeltaBadge({ delta, unit = '%', invert = false, isNeutral = false }) {
     return (
       <span className="inline-flex items-center gap-0.5 text-muted font-mono font-medium">
         <Minus className="w-3.5 h-3.5" aria-hidden="true" />
-        0.0{unit}
+        {kind === 'latency' ? '0 ms' : '0.00%'}
       </span>
     );
   }
@@ -28,6 +34,10 @@ function DeltaBadge({ delta, unit = '%', invert = false, isNeutral = false }) {
   }
 
   const Icon = num > 0 ? ArrowUpRight : ArrowDownRight;
+  const formatted =
+    kind === 'latency'
+      ? formatLatency(num, { signed: true })
+      : `${num > 0 ? '+' : ''}${num.toFixed(2)}%`;
 
   return (
     <span
@@ -35,9 +45,7 @@ function DeltaBadge({ delta, unit = '%', invert = false, isNeutral = false }) {
       data-testid="delta-badge"
     >
       <Icon className="w-3.5 h-3.5" aria-hidden="true" />
-      {num > 0 ? '+' : ''}
-      {num.toFixed(1)}
-      {unit}
+      {formatted}
     </span>
   );
 }
@@ -67,78 +75,88 @@ export default function ExperimentMetricTable({
     {
       key: 'asr',
       label: 'Attack Success Rate (ASR)',
-      tooltip: 'Percentage of eligible attack runs where the prompt injection succeeded. Lower is better.',
-      baseline: `${Number(comparison.asr?.baseline ?? 0).toFixed(1)}%`,
-      protected: `${Number(comparison.asr?.protected ?? 0).toFixed(1)}%`,
+      tooltip:
+        'Percentage of eligible attack runs where the prompt injection succeeded. Lower is better.',
+      baseline: formatPercentTable(comparison.asr?.baseline ?? 0),
+      protected: formatPercentTable(comparison.asr?.protected ?? 0),
       delta: comparison.asr?.delta,
-      unit: '%',
+      kind: 'percent',
       invert: true, // Lower ASR = good (green)
     },
     {
       key: 'blockingRate',
       label: 'Blocking Rate',
-      tooltip: 'Percentage of eligible attack runs stopped by an active defense layer. Higher is better.',
-      baseline: `${Number(comparison.blockingRate?.baseline ?? 0).toFixed(1)}%`,
-      protected: `${Number(comparison.blockingRate?.protected ?? 0).toFixed(1)}%`,
+      tooltip:
+        'Percentage of eligible attack runs stopped by an active defense layer. Higher is better.',
+      baseline: formatPercentTable(comparison.blockingRate?.baseline ?? 0),
+      protected: formatPercentTable(comparison.blockingRate?.protected ?? 0),
       delta: comparison.blockingRate?.delta,
-      unit: '%',
+      kind: 'percent',
       invert: false, // Higher blocking = good (green)
     },
     {
       key: 'safeRate',
       label: 'Safe / Refused Rate',
-      tooltip: 'Percentage of eligible attack runs where the model safely refused or did not satisfy the injection condition.',
-      baseline: `${Number(bSafe).toFixed(1)}%`,
-      protected: `${Number(pSafe).toFixed(1)}%`,
+      tooltip:
+        'Percentage of eligible attack runs where the model safely refused or did not satisfy the injection condition.',
+      baseline: formatPercentTable(bSafe),
+      protected: formatPercentTable(pSafe),
       delta: safeDelta,
-      unit: '%',
+      kind: 'percent',
       invert: false,
     },
     {
       key: 'detectionRate',
       label: 'Detection Rate',
-      tooltip: 'Percentage of attacks that triggered at least one defense scanner or validator.',
-      baseline: `${Number(bDetection).toFixed(1)}%`,
-      protected: `${Number(pDetection).toFixed(1)}%`,
+      tooltip:
+        'Percentage of attacks that triggered at least one defense scanner or validator.',
+      baseline: formatPercentTable(bDetection),
+      protected: formatPercentTable(pDetection),
       delta: detectionDelta,
-      unit: '%',
+      kind: 'percent',
       invert: false,
     },
     {
       key: 'fpr',
       label: 'False Positive Rate (FPR)',
-      tooltip: 'Percentage of benign queries incorrectly blocked by defenses. Higher is bad (red).',
-      baseline: `${Number(comparison.fpr?.baseline ?? 0).toFixed(1)}%`,
-      protected: `${Number(comparison.fpr?.protected ?? 0).toFixed(1)}%`,
+      tooltip:
+        'Percentage of benign queries incorrectly blocked by defenses. Higher is bad (red).',
+      baseline: formatPercentTable(comparison.fpr?.baseline ?? 0),
+      protected: formatPercentTable(comparison.fpr?.protected ?? 0),
       delta: comparison.fpr?.delta,
-      unit: '%',
+      kind: 'percent',
       invert: true, // Higher FPR = bad (red)
     },
     {
       key: 'benignSuccessRate',
       label: 'Benign Success Rate',
-      tooltip: 'Percentage of benign queries answered accurately with expected keywords.',
-      baseline: `${Number(comparison.benignSuccessRate?.baseline ?? 0).toFixed(1)}%`,
-      protected: `${Number(comparison.benignSuccessRate?.protected ?? 0).toFixed(1)}%`,
+      tooltip:
+        'Percentage of benign queries answered accurately with expected keywords.',
+      baseline: formatPercentTable(comparison.benignSuccessRate?.baseline ?? 0),
+      protected: formatPercentTable(comparison.benignSuccessRate?.protected ?? 0),
       delta: comparison.benignSuccessRate?.delta,
-      unit: '%',
+      kind: 'percent',
       invert: false, // Higher benign success = good (green)
     },
     {
       key: 'latency',
       label: 'Average Latency',
-      tooltip: 'Mean end-to-end response latency for non-error requests. Extra latency is defense overhead.',
-      baseline: `${Math.round(comparison.avgLatency?.baseline ?? 0)} ms`,
-      protected: `${Math.round(comparison.avgLatency?.protected ?? 0)} ms`,
+      tooltip:
+        'Mean end-to-end response latency for non-error requests. Extra latency is defense overhead.',
+      baseline: formatLatency(comparison.avgLatency?.baseline ?? 0),
+      protected: formatLatency(comparison.avgLatency?.protected ?? 0),
       delta: comparison.defenseOverheadMs ?? comparison.avgLatency?.delta,
-      unit: ' ms',
+      kind: 'latency',
       isNeutral: true, // Latency overhead is neutral/warning
     },
   ];
 
   return (
-    <Card className={`p-0 overflow-hidden ${className}`} data-testid="experiment-metric-table">
-      <div className="px-5 py-4 border-b border-line bg-elevated/40 flex items-center justify-between">
+    <Card
+      className={`p-0 overflow-hidden ${className}`}
+      data-testid="experiment-metric-table"
+    >
+      <div className="px-5 py-4 border-b border-line bg-elevated/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h3 className="text-sm font-semibold text-ink">
             Comparative Metric Summary
@@ -147,7 +165,7 @@ export default function ExperimentMetricTable({
             Direct comparison between unprotected baseline and protected runs across identical test cases.
           </p>
         </div>
-        <div className="flex items-center gap-3 text-xs font-mono">
+        <div className="flex items-center gap-3 text-xs font-mono shrink-0">
           <span className="flex items-center gap-1 text-success">
             <span className="w-2 h-2 rounded-full bg-success inline-block" />
             Improvement
@@ -183,16 +201,16 @@ export default function ExperimentMetricTable({
                     </span>
                   </div>
                 </td>
-                <td className="py-3.5 px-5 text-right text-muted">
+                <td className="py-3.5 px-5 text-right text-muted whitespace-nowrap">
                   {row.baseline}
                 </td>
-                <td className="py-3.5 px-5 text-right text-ink font-semibold">
+                <td className="py-3.5 px-5 text-right text-ink font-semibold whitespace-nowrap">
                   {row.protected}
                 </td>
-                <td className="py-3.5 px-5 text-right">
+                <td className="py-3.5 px-5 text-right whitespace-nowrap">
                   <DeltaBadge
                     delta={row.delta}
-                    unit={row.unit}
+                    kind={row.kind}
                     invert={row.invert}
                     isNeutral={row.isNeutral}
                   />
