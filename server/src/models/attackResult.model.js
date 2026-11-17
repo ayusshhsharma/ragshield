@@ -101,6 +101,7 @@ const attackResultSchema = new mongoose.Schema(
     timestamp: {
       type: String,
       required: true,
+      default: () => new Date().toISOString(),
     },
     caseSnapshot: {
       name: { type: String, default: '' },

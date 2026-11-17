@@ -47,39 +47,42 @@ export async function recoverStaleRuns() {
 }
 
 export function computeExperimentComparison(baselineMetrics, protectedMetrics) {
-  if (!baselineMetrics || !protectedMetrics) {
+  const b = baselineMetrics?.metrics || baselineMetrics;
+  const p = protectedMetrics?.metrics || protectedMetrics;
+
+  if (!b || !p) {
     return null;
   }
 
-  const bAsr = baselineMetrics.asr?.mean ?? 0;
-  const pAsr = protectedMetrics.asr?.mean ?? 0;
+  const bAsr = b.asr?.mean ?? 0;
+  const pAsr = p.asr?.mean ?? 0;
   const asrDelta = Number((pAsr - bAsr).toFixed(2));
 
-  const bBlock = baselineMetrics.blockingRate ?? 0;
-  const pBlock = protectedMetrics.blockingRate ?? 0;
+  const bBlock = b.blockingRate ?? 0;
+  const pBlock = p.blockingRate ?? 0;
   const blockingRateDelta = Number((pBlock - bBlock).toFixed(2));
 
-  const bFpr = baselineMetrics.benign?.fpr ?? 0;
-  const pFpr = protectedMetrics.benign?.fpr ?? 0;
+  const bFpr = b.benign?.fpr ?? 0;
+  const pFpr = p.benign?.fpr ?? 0;
   const fprDelta = Number((pFpr - bFpr).toFixed(2));
 
-  const bBenignSuccess = baselineMetrics.benign?.successRate ?? 0;
-  const pBenignSuccess = protectedMetrics.benign?.successRate ?? 0;
+  const bBenignSuccess = b.benign?.successRate ?? 0;
+  const pBenignSuccess = p.benign?.successRate ?? 0;
   const benignSuccessRateDelta = Number((pBenignSuccess - bBenignSuccess).toFixed(2));
 
-  const bLatency = baselineMetrics.latency?.avgMs ?? 0;
-  const pLatency = protectedMetrics.latency?.avgMs ?? 0;
+  const bLatency = b.latency?.avgMs ?? 0;
+  const pLatency = p.latency?.avgMs ?? 0;
   const defenseOverheadMs = Number((pLatency - bLatency).toFixed(2));
 
   const perCategory = {};
   const allCategories = new Set([
-    ...Object.keys(baselineMetrics.perCategory || {}),
-    ...Object.keys(protectedMetrics.perCategory || {}),
+    ...Object.keys(b.perCategory || {}),
+    ...Object.keys(p.perCategory || {}),
   ]);
 
   for (const cat of allCategories) {
-    const bCatAsr = baselineMetrics.perCategory?.[cat]?.asr ?? 0;
-    const pCatAsr = protectedMetrics.perCategory?.[cat]?.asr ?? 0;
+    const bCatAsr = b.perCategory?.[cat]?.asr ?? 0;
+    const pCatAsr = p.perCategory?.[cat]?.asr ?? 0;
     perCategory[cat] = {
       baseline: bCatAsr,
       protected: pCatAsr,
