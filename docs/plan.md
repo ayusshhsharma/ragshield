@@ -54,7 +54,7 @@ If behind schedule, cut UI polish (T5.10) first, never evaluation, tests, or the
 - [x] **T5.1 Auth flow.** Login/Register pages, `AuthContext` (token in localStorage, `/auth/me` bootstrap), `ProtectedRoute`, logout. *Accept:* component tests for ProtectedRoute redirect and form validation.
 - [x] **T5.2 Projects + shell.** Projects list/create/delete, project page with tabs, Overview checklist. 
 - [x] **T5.3 Documents + RAG config tabs.** Upload with progress/state, demo KB button, status polling for `processing`, config form.
-- [ ] **T5.4 Defenses tab.**
+- [x] **T5.4 Defenses tab.** Four defense cards with toggles, threshold sliders for DF-01/02, save button, notice that no defense is a complete solution.
 - [ ] **T5.5 Attack library tab + custom case form.**
 - [ ] **T5.6 Runs tab.** Start baseline/protected/experiment (options modal), runs table with live progress polling.
 - [ ] **T5.7 Run detail.** Metric grid, outcome bar, filters, paginated results table, result drawer, report download, cancel.
