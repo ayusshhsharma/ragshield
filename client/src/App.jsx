@@ -4,9 +4,10 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import { ToastProvider } from './context/ToastContext.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
 import AuthLayout from './layouts/AuthLayout.jsx';
+import DashboardPage from './pages/DashboardPage.jsx';
 import ExperimentComparePage from './pages/ExperimentComparePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
-import { NotFoundPage, PlaceholderPage } from './pages/PlaceholderPage.jsx';
+import { NotFoundPage } from './pages/PlaceholderPage.jsx';
 import ProjectShellPage from './pages/ProjectShellPage.jsx';
 import ProjectsPage from './pages/ProjectsPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
@@ -22,15 +23,7 @@ export function AppRoutes() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route
-            path="/"
-            element={
-              <PlaceholderPage
-                title="Dashboard"
-                description="Overview of projects, latest baseline vs protected ASR, and recent runs."
-              />
-            }
-          />
+          <Route path="/" element={<DashboardPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route
             path="/projects/:id"

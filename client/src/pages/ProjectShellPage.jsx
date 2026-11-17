@@ -21,6 +21,7 @@ import AttackLibraryTab from '../components/project/AttackLibraryTab.jsx';
 import DefensesTab from '../components/project/DefensesTab.jsx';
 import DocumentsTab from '../components/project/DocumentsTab.jsx';
 import OverviewTab from '../components/project/OverviewTab.jsx';
+import PlaygroundTab from '../components/project/PlaygroundTab.jsx';
 import RagConfigTab from '../components/project/RagConfigTab.jsx';
 import RunsTab from '../components/project/RunsTab.jsx';
 import Spinner from '../components/Spinner.jsx';
@@ -244,19 +245,32 @@ export default function ProjectShellPage() {
           />
         )}
 
-        {tab !== 'overview' && tab !== 'documents' && tab !== 'rag-config' && tab !== 'defenses' && tab !== 'attacks' && tab !== 'runs' && (
-          <Card className="flex flex-col items-center justify-center p-12 text-center space-y-3 bg-surface/60 border-dashed border-line">
-            <div className="w-10 h-10 rounded-full bg-elevated border border-line flex items-center justify-center text-muted">
-              {currentTab?.icon && <currentTab.icon className="w-5 h-5" />}
-            </div>
-            <h3 className="text-base font-semibold text-ink">
-              {currentTab?.label || 'Tab'} — Coming in next task
-            </h3>
-            <p className="text-xs text-muted max-w-md">
-              This module will be built in Task {currentTab?.task}. Live data and controls will be wired in accordance with the Phase 5 plan.
-            </p>
-          </Card>
+        {tab === 'playground' && (
+          <PlaygroundTab
+            project={project}
+            documentsCount={documents.length}
+          />
         )}
+
+        {tab !== 'overview' &&
+          tab !== 'documents' &&
+          tab !== 'rag-config' &&
+          tab !== 'defenses' &&
+          tab !== 'attacks' &&
+          tab !== 'runs' &&
+          tab !== 'playground' && (
+            <Card className="flex flex-col items-center justify-center p-12 text-center space-y-3 bg-surface/60 border-dashed border-line">
+              <div className="w-10 h-10 rounded-full bg-elevated border border-line flex items-center justify-center text-muted">
+                {currentTab?.icon && <currentTab.icon className="w-5 h-5" />}
+              </div>
+              <h3 className="text-base font-semibold text-ink">
+                {currentTab?.label || 'Tab'} — Coming in next task
+              </h3>
+              <p className="text-xs text-muted max-w-md">
+                This module will be built in Task {currentTab?.task}. Live data and controls will be wired in accordance with the Phase 5 plan.
+              </p>
+            </Card>
+          )}
       </div>
     </div>
   );

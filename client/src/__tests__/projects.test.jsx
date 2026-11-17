@@ -265,7 +265,7 @@ describe('ProjectShellPage & Tab Bar (/projects/:id/:tab)', () => {
     });
   });
 
-  it('renders "Coming in next task" and no fake data for unbuilt tabs', async () => {
+  it('renders interactive Playground tab on /projects/:id/playground', async () => {
     api.get.mockImplementation((url) => {
       if (url === '/projects/proj-123') return Promise.resolve({ data: { project: baseProject } });
       if (url === '/projects/proj-123/documents') return Promise.resolve({ data: { documents: [] } });
@@ -284,14 +284,10 @@ describe('ProjectShellPage & Tab Bar (/projects/:id/:tab)', () => {
     );
 
     await waitFor(() => {
-      expect(
-        screen.getByText('Playground — Coming in next task'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('playground-tab')).toBeInTheDocument();
     });
 
-    expect(
-      screen.getByText(/This module will be built in Task T5.9/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Interactive RAG Playground')).toBeInTheDocument();
   });
 });
 

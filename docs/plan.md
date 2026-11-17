@@ -59,7 +59,7 @@ If behind schedule, cut UI polish (T5.10) first, never evaluation, tests, or the
 - [x] **T5.6 Runs tab.** Start baseline/protected/experiment (options modal), runs table with live progress polling.
 - [x] **T5.7 Run detail.** Metric grid, outcome bar, filters, paginated results table, result drawer, report download, cancel.
 - [x] **T5.8 Experiment compare + charts.**
-- [ ] **T5.9 Dashboard + Playground.**
+- [x] **T5.9 Dashboard + Playground.**
 - [ ] **T5.10 States and polish.** Loading/empty/error everywhere, responsive pass, a11y pass, synthetic-data banner.
 *Accept for each T5.x:* matches `design.md`; `npm run build` passes; one manual walkthrough of the feature against the real backend described in the report; `utils`/`ProtectedRoute` tests only (no snapshot tests).
 
